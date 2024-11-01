@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <?php
+    require "Analisador.php";
+
     $codigo = isset($_POST["codigo"]) ? $_POST["codigo"] : "";
+
+    $analisadorLexico = new Analisador();
+    $tokens = $analisadorLexico->executar($codigo);
 ?>
 <html lang="pt-br">
 <head>
@@ -43,9 +48,11 @@
             echo "<pre><p>".$codigo."</p></pre>";
     ?>
     <h3>Tokens:</h3>
-    <pre id="tokens">
-        
-    </pre>
+    <pre id="tokens"><?php
+        foreach($tokens as $token){
+            echo "< ".$token[0].", ".$token[1]." ><br>";
+        }
+    ?></pre>
     <?php
         }
     ?>
