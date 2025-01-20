@@ -25,7 +25,11 @@
             $this->automato = new Automato();
         }
 
+        // Função que realiza a Análise Léxica do código
+
         public function executar($entrada){
+            // Inicialização das variáveis
+
             $tokens = [];
             $erros = [];
             
@@ -34,6 +38,8 @@
 
             $estadoAtual = "q0";
             $lexema = "";
+
+            // Início da leitura do código
 
             for($i = 0; $i < strlen($entrada); $i++){
                 if($entrada[$i] == "\r"){
@@ -51,7 +57,7 @@
                         $estadoAtual = $this->automato->transicoes[$estadoAtual][$entrada[$i]];
 
                     if(!isset($this->automato->transicoes[$estadoAtual][$proximoCaracter]) && $estadoAtual != "q0"){
-                        if($estadoAtual != 'q99'){
+                        if($estadoAtual != 'q99'){ // Se o estado atual for o q99, o token de espaços não é adicionado ao vetor
                             $nomeToken = isset($this->tokensAceitos[$estadoAtual]) ? $this->tokensAceitos[$estadoAtual] : "ID";
 
                             $tokens[] = new Token($nomeToken, $lexema, $linha, $coluna);
