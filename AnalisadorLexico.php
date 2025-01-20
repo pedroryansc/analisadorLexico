@@ -39,28 +39,31 @@
                 if($entrada[$i] == "\r"){
                     $linha++;
                     $coluna = 0;
-                    $i = $i + 2;
-                }
-
-                $coluna++;
-
-                $proximoCaracter = isset($entrada[$i + 1]) ? $entrada[$i + 1] : null;
-
-                $lexema .= $entrada[$i];
-
-                if(isset($this->automato->transicoes[$estadoAtual][$entrada[$i]]))
-                    $estadoAtual = $this->automato->transicoes[$estadoAtual][$entrada[$i]];
-
-                if(!isset($this->automato->transicoes[$estadoAtual][$proximoCaracter])){
-                    if($estadoAtual != 'q99')
-                        $tokens[] = new Token($this->tokensAceitos[$estadoAtual], $lexema, $linha, $coluna);
-                    
-                    $estadoAtual = "q0";
-                    $lexema = "";
+                    $i++;
                 } else{
-                    if($estadoAtual == "q0"){
-                        $erros[] = new Token("", $lexema, $linha, $coluna);
+                    $coluna++;
+
+                    $proximoCaracter = isset($entrada[$i + 1]) ? $entrada[$i + 1] : null;
+
+                    $lexema .= $entrada[$i];
+
+                    if(isset($this->automato->transicoes[$estadoAtual][$entrada[$i]]))
+                        $estadoAtual = $this->automato->transicoes[$estadoAtual][$entrada[$i]];
+
+                    if(!isset($this->automato->transicoes[$estadoAtual][$proximoCaracter]) && $estadoAtual != "q0"){
+                        if($estadoAtual != 'q99'){
+                            $nomeToken = isset($this->tokensAceitos[$estadoAtual]) ? $this->tokensAceitos[$estadoAtual] : "ID";
+
+                            $tokens[] = new Token($nomeToken, $lexema, $linha, $coluna);
+                        }
+
+                        $estadoAtual = "q0";
                         $lexema = "";
+                    } else{
+                        if($estadoAtual == "q0"){
+                            $erros[] = new Token("", $lexema, $linha, $coluna);
+                            $lexema = "";
+                        }
                     }
                 }
             }
